@@ -2,6 +2,8 @@ import numpy as np
 from OpenGL.GL import *
 import random
 
+temp_dir = "W"
+
 MAX_BLOCKS = 20 * 20
 
 snake_pos = np.zeros([MAX_BLOCKS, 2])

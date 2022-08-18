@@ -5,10 +5,14 @@ import game
 
 AREA_SIZE = 20
 direction = "W"
+isClicked = False
 
 def coord_check(coords, window):
-	if coords[0][0] == 21 or coords[0][1] == 21:
-		glfw.set_window_should_close(window, True)
+	i = game.snake_length
+	while (i > 0):
+		if (coords[0][0] == coords[i][0] and coords[0][1] == coords[i][1]) or (coords[0][0] == 21 or coords[0][1] == 21):
+			glfw.set_window_should_close(window, True)
+		i -= 1
 
 def setAspect(width, height):
 	return width / height
@@ -17,21 +21,29 @@ def window_size_callback(window, width, height):
 	glfw.set_window_size(window, 400, 400)
 
 def keyboard_callback(window):
-	global direction
+	global direction, isClicked
 	if glfw.get_window_attrib(window, glfw.FOCUSED) == glfw.TRUE:
 		if glfw.get_key(window, glfw.KEY_ESCAPE) == glfw.PRESS:
 			glfw.set_window_should_close(window, True)
 		if glfw.get_key(window, glfw.KEY_W) == glfw.PRESS:
-			direction = "W"
+			if direction != "S" and not isClicked:
+				direction = "W"
+				isClicked = True
 		if glfw.get_key(window, glfw.KEY_S) == glfw.PRESS:
-			direction = "S"
+			if direction != "W" and not isClicked:
+				direction = "S"
+				isClicked = True
 		if glfw.get_key(window, glfw.KEY_A) == glfw.PRESS:
-			direction = "A"
+			if direction != "D" and not isClicked:
+				direction = "A"
+				isClicked = True
 		if glfw.get_key(window, glfw.KEY_D) == glfw.PRESS:
-			direction = "D"
+			if direction != "A" and not isClicked:
+				direction = "D"
+				isClicked = True
 
 def main():
-	global direction
+	global direction, isClicked
 
 	glfw.init()
 	glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
@@ -65,11 +77,12 @@ def main():
 		game.food_draw()
 		game.snake_draw()
 
-		if time == 100:
+		if time == 10:
 			game.snake_move(dir=direction)
 			coord_check(game.snake_pos, window)
+			isClicked = False
 			time = 0
-			print(game.snake_pos[0][0], game.snake_pos[0][1])
+			#print(game.snake_pos[0][0], game.snake_pos[0][1])
 
 		time += 1
 		glfw.swap_buffers(window)
